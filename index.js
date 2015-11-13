@@ -52,7 +52,7 @@ MoveDiff.prototype.toJSON = function() {
     };
 };
 
-function strictEqual(a, b, callback) {
+function strictEqual(a, b, indexA, indexB, callback) {
     return callback(a === b);
 }
 
@@ -82,7 +82,7 @@ function arrayDiff(before, after, equalFn, callback) {
             afterIndex < afterLength &&
             !afterMarked[afterIndex]) {
 
-            equalFn(before[beforeIndex], after[afterIndex], function (areEqual) {
+            equalFn(before[beforeIndex], after[afterIndex], beforeIndex, afterIndex, function (areEqual) {
                 if (areEqual) {
                     setTimeout(function () {
                         findMatching(beforeIndex, afterIndex, howMany, callback);
@@ -109,7 +109,7 @@ function arrayDiff(before, after, equalFn, callback) {
         }
 
         if (!afterMarked[afterIndex]) {
-            equalFn(before[beforeIndex], after[afterIndex], function (areEqual) {
+            equalFn(before[beforeIndex], after[afterIndex], beforeIndex, afterIndex, function (areEqual) {
                 if (areEqual) {
 
                     var from = beforeIndex;

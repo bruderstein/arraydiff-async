@@ -102,7 +102,7 @@
 
     it('returns an empty diff for an identical array', () => {
 
-      return arrayDiffPromise([ 1, 2, 3 ], [ 1, 2, 3], (a, b, callback) => callback(a === b))
+      return arrayDiffPromise([ 1, 2, 3 ], [ 1, 2, 3], (a, b, indexA, indexB, callback) => callback(a === b))
         .then(diff => {
           expect(diff, 'to equal', []);
         });
@@ -110,7 +110,7 @@
 
     it('returns a single insert for an item on the end', () => {
 
-      return arrayDiffPromise([ 1, 2 ], [ 1, 2, 3], (a, b, callback) => callback(a === b))
+      return arrayDiffPromise([ 1, 2 ], [ 1, 2, 3], (a, b, indexA, indexB, callback) => callback(a === b))
           .then(diff => {
             expect(diff[0].toJSON(), 'to equal', { type: 'insert', index: 2, values: [ 3 ] });
             expect(diff, 'to have length', 1)
@@ -119,7 +119,7 @@
 
     it('returns a single remove for an item removed from the end', () => {
 
-      return arrayDiffPromise([ 1, 2, 3 ], [ 1, 2 ], (a, b, callback) => callback(a === b))
+      return arrayDiffPromise([ 1, 2, 3 ], [ 1, 2 ], (a, b, indexA, indexB, callback) => callback(a === b))
           .then(diff => {
             expect(diff[0].toJSON(), 'to equal', { type: 'remove', index: 2, howMany: 1 });
             expect(diff, 'to have length', 1)
@@ -128,7 +128,7 @@
 
     it('returns a insert for an item inserted in the middle', () => {
 
-      return arrayDiffPromise([ 1, 3 ], [ 1, 2, 3 ], (a, b, callback) => callback(a === b))
+      return arrayDiffPromise([ 1, 3 ], [ 1, 2, 3 ], (a, b, indexA, indexB, callback) => callback(a === b))
           .then(diff => {
             expect(diff[0].toJSON(), 'to equal', { type: 'insert', index: 1, values: [ 2 ] });
             expect(diff, 'to have length', 1)
@@ -138,7 +138,7 @@
 
     it('returns a remove for an item removed from the middle', () => {
 
-      return arrayDiffPromise([ 1, 2, 3 ], [ 1, 3 ], (a, b, callback) => callback(a === b))
+      return arrayDiffPromise([ 1, 2, 3 ], [ 1, 3 ], (a, b, indexA, indexB, callback) => callback(a === b))
           .then(diff => {
             expect(diff[0].toJSON(), 'to equal', { type: 'remove', index: 1, howMany: 1 });
             expect(diff, 'to have length', 1)
@@ -147,7 +147,7 @@
 
     it('returns a remove and an insert when first item is different', () => {
 
-      return arrayDiffPromise([ 1, 2, 3 ], [ 4, 2, 3 ], (a, b, callback) => callback(a === b))
+      return arrayDiffPromise([ 1, 2, 3 ], [ 4, 2, 3 ], (a, b, indexA, indexB, callback) => callback(a === b))
           .then(diff => {
             expect(diff[0].toJSON(), 'to equal', { type: 'remove', index: 0, howMany: 1 });
             expect(diff[1].toJSON(), 'to equal', { type: 'insert', index: 0, values: [ 4 ] });
@@ -159,7 +159,7 @@
 
     it('returns a set of move for a reverse array', () => {
 
-      return arrayDiffPromise([ 3, 2, 1 ], [ 1, 2, 3 ], (a, b, callback) => callback(a === b))
+      return arrayDiffPromise([ 3, 2, 1 ], [ 1, 2, 3 ], (a, b, indexA, indexB, callback) => callback(a === b))
           .then(diff => {
             expect(diff[0].toJSON(), 'to equal', { type: 'move', from: 1, to: 0, howMany: 1 });
             expect(diff[1].toJSON(), 'to equal', { type: 'move', from: 2, to: 0, howMany: 1 });
