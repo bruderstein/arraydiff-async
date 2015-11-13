@@ -63,18 +63,22 @@
   };
 
   testDiff = function(before, after, equalFn) {
+    var called = 0;
     return expect.promise(function (resolve, reject) {
       arrayDiff(before, after, equalFn, function (result) {
-        resolve(result);
+        called += 1;
+        setTimeout(function () {
+
+          if (called !== 1) {
+            return reject('Callback called more than once');
+          }
+          resolve(result);
+        }, 10);
       });
     }).then(diff => {
+
       var expected = applyDiff(before, diff);
-      try {
-        return expect(expected, 'to equal', after);
-      } catch (e) {
-        console.log('before', JSON.stringify(before), 'after', JSON.stringify(after));
-        throw e;
-      }
+          expect(expected, 'to equal', after);
     });
   };
 
@@ -164,7 +168,7 @@
     });
 
     it('diffs with a repeated element', () => {
-      return expect([32], 'to match diffs against', [32,32, 32]);
+      return expect([32], 'to match diffs against', [32, 32, 32]);
     });
 
     it('diffs a known array', () => {
